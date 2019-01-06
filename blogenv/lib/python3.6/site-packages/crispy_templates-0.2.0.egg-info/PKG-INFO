@@ -1,0 +1,111 @@
+Metadata-Version: 1.1
+Name: crispy-templates
+Version: 0.2.0
+Summary: A collection of useful templates for customizing crispy forms layouts.
+Home-page: https://github.com/audiolion/crispy-templates
+Author: Ryan Castner
+Author-email: castner.rr@gmail.com
+License: MIT
+Description: =============================
+        crispy-templates
+        =============================
+        
+        .. image:: https://badge.fury.io/py/crispy-templates.png
+            :target: https://badge.fury.io/py/crispy-templates
+        
+        A collection of useful templates for customizing crispy forms layouts.
+        
+        Documentation
+        -------------
+        
+        The full documentation is at https://crispy-templates.readthedocs.io.
+        
+        Quickstart
+        ----------
+        
+        crispy-templates depends on [crispy-forms](https://github.com/django-crispy-forms/django-crispy-forms#django-crispy-forms), make sure that you have properly installed crispy forms first.
+        
+        Install crispy-templates::
+        
+            pip install crispy-templates
+        
+        Add it to your `INSTALLED_APPS`:
+        
+        .. code-block:: python
+        
+            INSTALLED_APPS = (
+                ...
+                'crispy_templates.apps.CrispyTemplatesConfig',
+                ...
+            )
+        
+        Define your layout template in the `crispy_forms.helper.FormHelper` object:
+        
+        .. code-block:: python
+            from crispy_forms.helper import FormHelper
+            from crispy_forms.layout import Field, Layout
+        
+            class BookForm(forms.ModelForm):
+                def __init__(self, *args, **kwargs):
+                    super(BookForm, self).__init__(*args, **kwargs)
+                    self.helper = FormHelper()
+                    self.helper.template_pack = "bootstrap3"
+                    self.helper.layout = Layout(
+                        Field('publication_status', template="crispy_templates/layouts/radio_btngroup_field.html"),
+                    )
+        
+        Add the javascript by running `python manage.py collectstatic` and then including it in your template:
+        
+        .. code-block:: python
+        
+            {% static 'crispy_templates/js/crispy_templates.js' %}
+        
+        Preferably add it to the footer of your page so as to not delay the page load.
+          **Note** - Currently only supports the `bootstrap3` template pack that comes with `crispy_forms`.
+        
+        Credits
+        -------
+        
+        Tools used in rendering this package:
+        
+        *  Cookiecutter_
+        *  `cookiecutter-djangopackage`_
+        
+        .. _Cookiecutter: https://github.com/audreyr/cookiecutter
+        .. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
+        
+        
+        
+        
+        History
+        -------
+        
+        0.2.0 (2017-01-17)
+        ++++++++++++++++++
+        
+        * Fixed method of rendering field so form would pull out the data
+        * Refactored how the project templates were structured and how to include the new template override
+        * Updated documentation
+        
+        0.1.0 (2017-01-14)
+        ++++++++++++++++++
+        
+        * First release on PyPI.
+        
+Keywords: crispy-templates
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 1.8
+Classifier: Framework :: Django :: 1.9
+Classifier: Framework :: Django :: 1.10
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.2
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
