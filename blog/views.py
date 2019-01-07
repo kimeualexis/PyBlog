@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, Comment
 
 
 """
@@ -69,6 +69,29 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+
+
+class CommentListView(ListView):
+    model = Comment
+    context_object_name = 'comments'
+    template_name = ''
+
+
+class CommentCreateView(CreateView):
+    model = Comment
+    fields = ['comment']
+
+    """
+    def get_success_url(self):
+        return reverse('blog:post-detail')
+        """
+
+    def form_valid(self, form, **kwargs):
+        post = get_object_or_404(Post, pk=self.kwargs.get('pk'))
+        form.instance.author = self.request.user
+        form.instance.post = post
+        # form.instance.post = self.request.post
+        return super(CommentCreateView, self).form_valid(form)
 
 
 def about(request):
