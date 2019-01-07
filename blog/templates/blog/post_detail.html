@@ -27,6 +27,13 @@
               {% for i in object.comment_set.all %}
                   <p>{{ i.comment }} - <a class="mr-2" href="">{{ i.author }}</a></p>
 
+                  {% if object.author == user %}
+                    <div class="">
+                    <a class="btn btn-secondary btn-sn mt-1 mb-1" href="{% url 'blog:comment-update' object.id %}">Update</a>
+                    <a class="btn btn-danger btn-sn mt-1 mb-1" href="{% url 'blog:comment-delete' object.id %}">Delete</a>
+                    </div>
+                {% endif %}
+
               {% endfor %}
               <hr>
           {% endif %}

@@ -71,10 +71,12 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
+"""
 class CommentListView(ListView):
     model = Comment
     context_object_name = 'comments'
     template_name = ''
+    """
 
 
 class CommentCreateView(CreateView):
@@ -92,6 +94,32 @@ class CommentCreateView(CreateView):
         form.instance.post = post
         # form.instance.post = self.request.post
         return super(CommentCreateView, self).form_valid(form)
+
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+
+    fields = ['comment']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        comment = self.get_object()
+        if self.request.user == comment.author:
+            return True
+        return False
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+
+    def test_func(self):
+        comment = self.get_object()
+        if self.request.user == comment.author:
+            return True
+        return False
 
 
 def about(request):
