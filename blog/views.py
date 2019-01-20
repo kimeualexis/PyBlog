@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from .models import Post, Comment
+from .forms import CommentForm
 
 
 """
@@ -33,6 +34,18 @@ class UserPostListView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
+
+
+def detail(request, post_id):
+    form = CommentForm(request.POST or None)
+    post = get_object_or_404(Post, pk=post_id)
+    if form.is_valid():
+        comm = form.save(commit=False)
+        comm.post = post
+        comm.author = request.user
+        comm.save()
+    form = CommentForm()
+    return render(request, 'blog/post_detail.html', {'form': form, 'post': post})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -124,3 +137,5 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def about(request):
     return render(request, 'blog/about.html')
+
+

@@ -1,36 +1,36 @@
 {% extends 'blog/base.html' %}
-
+{% load crispy_forms_tags %}
 {% block title %}<title>BlogPy</title>{% endblock %}
 
 {% block body %}
         <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+        <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{% url 'blog:user-posts' object.author.username %}">{{ object.author }}</a>
-              <small class="text-muted">{{ object.created|date:"F d, Y" }}</small>
-                {% if object.author == user %}
+              <a class="mr-2" href="{% url 'blog:user-posts' post.author.username %}">{{ post.author }}</a>
+              <small class="text-muted">{{ post.created|date:"F d, Y" }}</small>
+                {% if post.author == user %}
                     <div class="">
-                    <a class="btn btn-secondary btn-sn mt-1 mb-1" href="{% url 'blog:post-update' object.id %}">Update</a>
-                    <a class="btn btn-danger btn-sn mt-1 mb-1" href="{% url 'blog:post-delete' object.id %}">Delete</a>
+                    <a class="btn btn-secondary btn-sn mt-1 mb-1" href="{% url 'blog:post-update' pk=post.pk %}">Update</a>
+                    <a class="btn btn-danger btn-sn mt-1 mb-1" href="{% url 'blog:post-delete' post.id %}">Delete</a>
                     </div>
                 {% endif %}
             </div>
-            <h2 class="article-title">{{ object.title }}</h2>
-            <p class="article-content">{{ object.content }}</p>
+            <h2 class="article-title">{{ post.title }}</h2>
+            <p class="article-content">{{ post.content }}</p>
 
 
-          {% if object.comment_set %}
-              <div class="">
-              <h5 class="text-secondary text-outline-info">Comments: {{ object.comment_set.count }}</h5>
+          {% if post.comment_set %}
+              <div class="article-metadata">
+              <h5 class="text-secondary text-outline-info">Comments: {{ post.comment_set.count }}</h5>
           </div>
-              {% for i in object.comment_set.all %}
+              {% for i in post.comment_set.all %}
                   <p>{{ i.comment }} - <a class="mr-2" href="">{{ i.author }}</a></p>
 
-                  {% if object.author == user %}
+                  {% if post.author == user %}
                     <div class="">
-                    <a class="btn btn-secondary btn-sn mt-1 mb-1" href="{% url 'blog:comment-update' object.id %}">Update</a>
-                    <a class="btn btn-danger btn-sn mt-1 mb-1" href="{% url 'blog:comment-delete' object.id %}">Delete</a>
+                    <a class="btn btn-secondary btn-sn mt-1 mb-1" href="{% url 'blog:comment-update' post.id %}">Update</a>
+                    <a class="btn btn-danger btn-sn mt-1 mb-1" href="{% url 'blog:comment-delete' post.id %}">Delete</a>
                     </div>
                 {% endif %}
 
@@ -38,9 +38,18 @@
               <hr>
           {% endif %}
 
-          <div>
-            <a class="btn btn-outline-primary btn-sn mt-1 mb-1" href="{% url 'blog:post-comment' object.id %}">Comment</a>
-        </div>
+
+          <br><br>
+    <form method="POST" action="{% url 'blog:post-detail' post.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4"><b>Your Comment</b></legend>
+        {{ form|crispy }}
+    </fieldset>
+    <div class="form-group">
+        <button type="submit" class="btn btn-outline-info">Submit</button>
+    </div>
+</form>
           </div>
 
 
